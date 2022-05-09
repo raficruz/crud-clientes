@@ -2,56 +2,94 @@ package com.raficruz.crudcliente.model;
 
 import java.io.Serializable;
 import java.time.LocalDate;
-import javax.validation.Valid;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
-import org.springframework.validation.annotation.Validated;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import io.swagger.annotations.ApiModelProperty;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
 
 /**
  * Customer
  */
-@NoArgsConstructor
-@AllArgsConstructor
-@Data
-@Builder
-@Validated
+@Entity
 public class Customer implements Serializable {
 
 	private static final long serialVersionUID = -8630233981550309829L;
 
-	@ApiModelProperty(value = "id")
-	@JsonProperty("id")
+	public Customer() {
+		super();
+	}
+
+	public Customer(Long id, String name, LocalDate birthday, String cpf, SexoEnum gender) {
+		super();
+		this.id = id;
+		this.name = name;
+		this.birthday = birthday;
+		this.cpf = cpf;
+		this.gender = gender;
+	}
+
+	@Id
+	@GeneratedValue
 	private Long id;
 
-	@NotNull
-	@Size(max = 40)
-	@JsonProperty("nome")
-	@ApiModelProperty(example = "Rafael Cruz", required = true)
-	private String nome;
+	@Column(name = "nome", nullable = false)
+	private String name;
 
-	@Valid
-	@NotNull
-	@ApiModelProperty(example = "01/01/1971", required = true)
-	@JsonProperty("nascimento")
-	private LocalDate nascimento;
+	@Column(name = "nascimento", nullable = false)
+	private LocalDate birthday;
 
-	@Valid
-	@NotNull
-	@ApiModelProperty(example = "12345678901", required = true)
-	@JsonProperty("cpf")
-	@Size(max = 11)
+	@Cpf
+	@Column(name = "cpf", unique = true, nullable = false)
 	private String cpf;
 
-	@Valid
-	@NotNull
-	@JsonProperty("sexo")
-	@ApiModelProperty(example = "M", required = true)
-	private SexoEnum sexo;
+	@Enumerated(EnumType.STRING)
+	@Column(name = "sexo", nullable = false)
+	private SexoEnum gender;
 
+	public Long getId() {
+		return id;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public LocalDate getBirthday() {
+		return birthday;
+	}
+
+	public String getCpf() {
+		return cpf;
+	}
+
+	public SexoEnum getGender() {
+		return gender;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public void setBirthday(LocalDate birthday) {
+		this.birthday = birthday;
+	}
+
+	public void setCpf(String cpf) {
+		this.cpf = cpf;
+	}
+
+	public void setGender(SexoEnum gender) {
+		this.gender = gender;
+	}
+
+	public CustomerDTO toDTO() {
+		return new CustomerDTO(this.id, this.name, this.birthday, this.cpf, this.gender);
+	}
 }

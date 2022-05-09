@@ -1,17 +1,11 @@
 package com.raficruz.crudcliente.handler;
 
-public class NotFoundException extends ApiException {
+public class NotFoundException extends RuntimeException {
 
 	private static final long serialVersionUID = 4513357775525967862L;
 
-	private final int code;
-
-    public NotFoundException (int code, String msg) {
-        super(code, msg);
-        this.code = code;
+    public NotFoundException (String msg) {
+        super(msg);
     }
 
-    public int getCode() {
-		return code;
-	}
 }

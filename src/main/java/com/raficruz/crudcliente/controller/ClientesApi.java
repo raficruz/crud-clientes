@@ -1,5 +1,6 @@
 package com.raficruz.crudcliente.controller;
 
+import java.time.LocalDate;
 import java.util.List;
 
 import javax.validation.Valid;
@@ -15,9 +16,10 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.threeten.bp.LocalDate;
 
+import com.raficruz.crudcliente.handler.NotFoundException;
 import com.raficruz.crudcliente.model.Customer;
+import com.raficruz.crudcliente.model.CustomerDTO;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -53,7 +55,7 @@ public interface ClientesApi {
 			@Valid
 			@ApiParam(value = "Customer object that needs to be added to the store", required = true)
 			@RequestBody
-			final Customer body);
+			final CustomerDTO customer);
 
 
 	@ApiOperation(value = "Deletes a customer",
@@ -72,9 +74,9 @@ public interface ClientesApi {
 	@DeleteMapping(value = "/clientes/{clienteId}",
 					produces = { "application/json" })
 	ResponseEntity<Void> deleteCustomer(
-			@ApiParam(value = "customer id to delete", required = true)
-			@PathVariable("clienteId")
-			final Long clienteId);
+							@ApiParam(value = "customer id to delete", required = true)
+							@PathVariable("clienteId")
+							final Long clienteId) throws NotFoundException;
 
 
 	@ApiOperation(value = "Finds all clients by filters",
@@ -94,8 +96,13 @@ public interface ClientesApi {
 			@ApiResponse(code = 204, message = "Não encontrado"),
 			@ApiResponse(code = 400, message = "Invalid status value") })
 	@GetMapping(value = "/clientes", produces = { "application/json" })
-	ResponseEntity<List<Customer>> findAll(
+	ResponseEntity<List<CustomerDTO>> findAll(
 
+			@Valid
+			@ApiParam(value = "Id")
+			@RequestParam(value = "id", required = false)
+			final Long id,
+			
 			@Valid
 			@Size(max = 40)
 			@ApiParam(value = "Customer Name")
@@ -119,8 +126,8 @@ public interface ClientesApi {
 			final String sexo);
 
 
-	@ApiOperation(value = "Find customer by ID",
-					nickname = "getCustomerById",
+	@ApiOperation(value = "Find customer by CPF",
+					nickname = "getCustomerByCPF",
 					notes = "Returns a single customer",
 					response = Customer.class,
 					authorizations = {@Authorization(value = "api_key")},
@@ -130,12 +137,12 @@ public interface ClientesApi {
 					@ApiResponse(code = 204, message = "Não encontrado"),
 					@ApiResponse(code = 400, message = "Invalid status value"),
 					@ApiResponse(code = 404, message = "customer not found") })
-	@GetMapping(value = "/clientes/{clienteId}",
+	@GetMapping(value = "/clientes/{cpf}",
 				produces = { "application/json" })
-	ResponseEntity<Customer> getCustomerById(
-			@ApiParam(value = "ID of customer to return", required = true)
-			@PathVariable("clienteId")
-			final Long clienteId);
+	ResponseEntity<CustomerDTO> getCustomerByCPF(
+			@ApiParam(value = "CPF of customer to return", required = true)
+			@PathVariable("cpf")
+			final String cpf) throws NotFoundException;
 
 	
 	@ApiOperation(value = "Update an existing customer", nickname = "updateCustomer", notes = "", authorizations = {
@@ -148,11 +155,14 @@ public interface ClientesApi {
 			@ApiResponse(code = 200, message = "Atualizado"),
 			@ApiResponse(code = 204, message = "Não encontrado"),
 			@ApiResponse(code = 409, message = "Dados obrigatórios e inválidos") })
-	@PutMapping(value = "/clientes", produces = { "application/json" }, consumes = {"application/json" })
+	@PutMapping(value = "/clientes/{clienteId}", produces = { "application/json" }, consumes = {"application/json" })
 	ResponseEntity<Void> updateCustomer(
+			@ApiParam(value = "customer id to delete", required = true)
+			@PathVariable("clienteId")
+			final Long clienteId,
 			@Valid
 			@ApiParam(value = "Customer object that needs to be added to the store", required = true)
 			@RequestBody
-			final Customer body);
+			final CustomerDTO customer);
 
 }

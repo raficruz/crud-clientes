@@ -1,80 +1,64 @@
 package com.raficruz.crudcliente.controller;
 
+import java.time.LocalDate;
 import java.util.List;
 
 import javax.validation.Valid;
 import javax.validation.constraints.Size;
 
+import org.apache.commons.collections4.CollectionUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.threeten.bp.LocalDate;
 
-import com.raficruz.crudcliente.model.Customer;
-
-import io.swagger.annotations.ApiParam;
+import com.raficruz.crudcliente.handler.BusinessException;
+import com.raficruz.crudcliente.handler.NotFoundException;
+import com.raficruz.crudcliente.model.CustomerDTO;
+import com.raficruz.crudcliente.service.CustomerService;
 
 @Controller
 public class ClientesApiController implements ClientesApi {
 
+	@Autowired
+	private CustomerService service;
 
-	public ResponseEntity<Void> addCustomer(
-			@Valid
-			@ApiParam(value = "Customer object that needs to be added to the store", required = true)
-			@RequestBody Customer body)
-	{
-		return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
+	@Override
+	public ResponseEntity<Void> addCustomer(@Valid CustomerDTO customer) {
+		service.addCustomer(customer);
+		return new ResponseEntity<>(HttpStatus.CREATED);
 	}
 
-	public ResponseEntity<Void> deleteCustomer(
-			@ApiParam(value = "customer id to delete", required = true)
-			@PathVariable("clienteId")
-			final Long clienteId)
-	{
-		return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
+	@Override
+	public ResponseEntity<Void> deleteCustomer(Long clienteId) throws NotFoundException {
+		List<CustomerDTO> customers = service.findAll(clienteId, null, null, null, null);
+		if(CollectionUtils.isEmpty(customers)) {
+			throw new BusinessException("Cliente não pode ser deletado", "Cliente não existe");
+		}
+		service.deleteCustomer(clienteId);
+		return new ResponseEntity<>(HttpStatus.OK);
 	}
 
-	public ResponseEntity<List<Customer>> findAll(
-			@Size(max = 40)
-			@ApiParam(value = "Customer Name")
-			@Valid @RequestParam(value = "nome", required = false)
-			final String nome,
-			
-			@ApiParam(value = "Customer birthday")
-			@Valid
-			@RequestParam(value = "nascimento", required = false)
-			final LocalDate nascimento,
-			
-			@Size(max = 11)
-			@ApiParam(value = "CPF")
-			@Valid @RequestParam(value = "cpf", required = false)
-			final String cpf,
-			
-			@ApiParam(value = "Gender", allowableValues = "M, F")
-			@Valid
-			@RequestParam(value = "sexo", required = false)
-			final String sexo)
-	{
-		return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
+	@Override
+	public ResponseEntity<List<CustomerDTO>> findAll(@Valid Long id, @Valid @Size(max = 40) String nome,
+			@Valid LocalDate nascimento, @Valid @Size(max = 11) String cpf, @Valid String sexo) {
+		List<CustomerDTO> customers = service.findAll(id, nome, nascimento, cpf, sexo);
+		return new ResponseEntity<>(customers, HttpStatus.OK);
 	}
 
-	public ResponseEntity<Customer> getCustomerById(
-			@ApiParam(value = "ID of customer to return", required = true)
-			@PathVariable("clienteId")
-			Long clienteId)
-	{
-		return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
+	@Override
+	public ResponseEntity<CustomerDTO> getCustomerByCPF(String cpf) throws NotFoundException {
+		return new ResponseEntity<>(service.getCustomerByCPF(cpf), HttpStatus.OK);
 	}
 
-	public ResponseEntity<Void> updateCustomer(
-			@Valid
-			@ApiParam(value = "Customer object that needs to be added to the store", required = true)
-			@RequestBody Customer body)
-	{
-		return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
+	@Override
+	public ResponseEntity<Void> updateCustomer(Long clienteId, @Valid CustomerDTO customer) {
+		List<CustomerDTO> customers = service.findAll(clienteId, null, null, null, null);
+		if(CollectionUtils.isEmpty(customers)) {
+			throw new BusinessException("Cliente não pode ser atualizado", "Cliente não existe");
+		}
+		service.addCustomer(customer);
+		return new ResponseEntity<>(HttpStatus.OK);
 	}
 
 }
