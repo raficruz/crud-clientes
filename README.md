@@ -3,14 +3,14 @@
 Este projeto engloba o fluxo de trabalho básico para criar um CRUD, não foge das atividades cotidianas de um desenvolvedor back-end: criação da estrutura do projeto, controles, serviços, repositórios e modelos de dados.
 
 
-*** A API Clientes tem a seguinte configuração: ***
+***A API Clientes tem a seguinte configuração:***
 
 	- Roda na porta: 8080
 	- Contexto: /clientes
 	- Utilizar jpa/hibernate
 	- Utilizar H2 em memória, com o console habilitado
 
-*** Os erros gerados são capturados pelo handler ExceptionsHandler, são eles:  ***
+***Os erros gerados são capturados pelo handler ExceptionsHandler, são eles:***
 
 	- 204 para não encontrado
 	- 409 – Conflict para dados obrigatórios e inválidos 
