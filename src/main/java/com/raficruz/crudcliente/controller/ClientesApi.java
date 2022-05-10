@@ -4,8 +4,10 @@ import java.time.LocalDate;
 import java.util.List;
 
 import javax.validation.Valid;
-import javax.validation.constraints.Size;
 
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -17,9 +19,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import com.raficruz.crudcliente.handler.NotFoundException;
+import com.raficruz.crudcliente.handler.exception.NotFoundException;
 import com.raficruz.crudcliente.model.Customer;
-import com.raficruz.crudcliente.model.CustomerDTO;
+import com.raficruz.crudcliente.model.dto.CustomerDTO;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -51,7 +53,7 @@ public interface ClientesApi {
 	@PostMapping(value = "/clientes",
 				consumes = {"application/json" },
 				produces = { "application/json" })
-	ResponseEntity<Void> addCustomer(
+	ResponseEntity<Void> saveCustomer(
 			@Valid
 			@ApiParam(value = "Customer object that needs to be added to the store", required = true)
 			@RequestBody
@@ -96,31 +98,25 @@ public interface ClientesApi {
 			@ApiResponse(code = 204, message = "Não encontrado"),
 			@ApiResponse(code = 400, message = "Invalid status value") })
 	@GetMapping(value = "/clientes", produces = { "application/json" })
-	ResponseEntity<List<CustomerDTO>> findAll(
+	ResponseEntity<List<Customer>> findAll(
+			@PageableDefault(page = 0, size = 10, sort = "id", direction = Sort.Direction.ASC) Pageable pageable,
 
-			@Valid
 			@ApiParam(value = "Id")
 			@RequestParam(value = "id", required = false)
 			final Long id,
 			
-			@Valid
-			@Size(max = 40)
 			@ApiParam(value = "Customer Name")
 			@RequestParam(value = "nome", required = false)
 			final String nome,
 			
-			@Valid
 			@ApiParam(value = "birthday")
 			@RequestParam(value = "nascimento", required = false)
 			final LocalDate nascimento,
 			
-			@Valid
-			@Size(max = 11)
 			@ApiParam(value = "CPF")
 			@RequestParam(value = "cpf", required = false)
 			final String cpf,
 			
-			@Valid
 			@ApiParam(value = "Gender", allowableValues = "M, F")
 			@RequestParam(value = "sexo", required = false)
 			final String sexo);
@@ -139,7 +135,7 @@ public interface ClientesApi {
 					@ApiResponse(code = 404, message = "customer not found") })
 	@GetMapping(value = "/clientes/{cpf}",
 				produces = { "application/json" })
-	ResponseEntity<CustomerDTO> getCustomerByCPF(
+	ResponseEntity<Customer> getCustomerByCPF(
 			@ApiParam(value = "CPF of customer to return", required = true)
 			@PathVariable("cpf")
 			final String cpf) throws NotFoundException;

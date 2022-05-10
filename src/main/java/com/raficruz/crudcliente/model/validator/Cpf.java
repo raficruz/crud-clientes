@@ -1,4 +1,4 @@
-package com.raficruz.crudcliente.model;
+package com.raficruz.crudcliente.model.validator;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;

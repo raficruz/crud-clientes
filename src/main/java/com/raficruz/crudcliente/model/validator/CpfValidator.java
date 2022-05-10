@@ -1,18 +1,22 @@
-package com.raficruz.crudcliente.model;
+package com.raficruz.crudcliente.model.validator;
 
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
 
 public class CpfValidator implements ConstraintValidator<Cpf, String> {
 
-	private final int[] PESO_CPF = { 11, 10, 9, 8, 7, 6, 5, 4, 3, 2 };
+	private static final int[] PESO_CPF = { 11, 10, 9, 8, 7, 6, 5, 4, 3, 2 };
 
 	@Override
-	public boolean isValid(String cpf, ConstraintValidatorContext context) {
+	public boolean isValid(String cpf, ConstraintValidatorContext contexts) {
+
+		if(cpf == null) {
+			return false;
+		}
 
 		String cpfSomenteDigitos = cpf.replaceAll("\\D", "");
 
-		if ((cpfSomenteDigitos == null) || (cpfSomenteDigitos.length() != 11) || cpfSomenteDigitos.equals("00000000000")
+		if ((cpfSomenteDigitos.length() != 11) || cpfSomenteDigitos.equals("00000000000")
 				|| cpfSomenteDigitos.equals("11111111111") || cpfSomenteDigitos.equals("22222222222")
 				|| cpfSomenteDigitos.equals("33333333333") || cpfSomenteDigitos.equals("44444444444")
 				|| cpfSomenteDigitos.equals("55555555555") || cpfSomenteDigitos.equals("66666666666")

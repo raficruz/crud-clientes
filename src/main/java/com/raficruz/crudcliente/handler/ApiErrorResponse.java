@@ -40,19 +40,4 @@ public class ApiErrorResponse implements Serializable {
 		return errors;
 	}
 
-	public void setCode(int code) {
-		this.code = code;
-	}
-
-	public void setMessage(String message) {
-		this.message = message;
-	}
-
-	public void setDescription(String description) {
-		this.description = description;
-	}
-
-	public void setErrors(List<String> errors) {
-		this.errors = errors;
-	}
 }

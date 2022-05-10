@@ -1,4 +1,4 @@
-package com.raficruz.crudcliente.handler;
+package com.raficruz.crudcliente.handler.exception;
 
 public class NotFoundException extends RuntimeException {
 

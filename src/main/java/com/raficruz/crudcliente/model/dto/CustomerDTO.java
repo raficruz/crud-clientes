@@ -1,4 +1,4 @@
-package com.raficruz.crudcliente.model;
+package com.raficruz.crudcliente.model.dto;
 
 import java.io.Serializable;
 import java.time.LocalDate;
@@ -10,12 +10,15 @@ import javax.validation.constraints.Size;
 import org.springframework.validation.annotation.Validated;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
+import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
+import com.raficruz.crudcliente.model.SexoEnum;
+import com.raficruz.crudcliente.model.validator.Cpf;
 
 import io.swagger.annotations.ApiModelProperty;
 
-/**
- * Customer
- */
 @Validated
 public class CustomerDTO implements Serializable {
 
@@ -27,16 +30,12 @@ public class CustomerDTO implements Serializable {
 
 	public CustomerDTO(final Long id, final String nome, final LocalDate nascimento, final String cpf, final SexoEnum sexo) {
 		super();
-		this.id = id;
 		this.nome = nome;
 		this.nascimento = nascimento;
 		this.cpf = cpf;
 		this.sexo = sexo;
 	}
 
-	@ApiModelProperty(value = "id")
-	@JsonProperty("id")
-	private Long id;
 
 	@Valid
 	@NotNull
@@ -49,6 +48,8 @@ public class CustomerDTO implements Serializable {
 	@NotNull(message = "A data de nascimento deve ser informada!")
 	@ApiModelProperty(example = "01/01/1971", required = true)
 	@JsonProperty("nascimento")
+	@JsonSerialize(using = LocalDateSerializer.class)
+	@JsonDeserialize(using = LocalDateDeserializer.class)
 	private LocalDate nascimento;
 
 	@Valid
@@ -63,10 +64,6 @@ public class CustomerDTO implements Serializable {
 	@JsonProperty("sexo")
 	@ApiModelProperty(example = "M", required = true)
 	private SexoEnum sexo;
-
-	public Long getId() {
-		return id;
-	}
 
 	public String getNome() {
 		return nome;
@@ -84,10 +81,6 @@ public class CustomerDTO implements Serializable {
 		return sexo;
 	}
 
-	public void setId(Long id) {
-		this.id = id;
-	}
-
 	public void setNome(String nome) {
 		this.nome = nome;
 	}
@@ -102,10 +95,6 @@ public class CustomerDTO implements Serializable {
 
 	public void setSexo(SexoEnum sexo) {
 		this.sexo = sexo;
-	}
-
-	public Customer toEntity() {
-		return new Customer(id, nome, nascimento, cpf, sexo);
 	}
 
 }

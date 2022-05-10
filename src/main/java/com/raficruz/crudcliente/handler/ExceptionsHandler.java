@@ -15,6 +15,9 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import com.raficruz.crudcliente.handler.exception.BusinessException;
+import com.raficruz.crudcliente.handler.exception.NotFoundException;
+
 @Order(Ordered.HIGHEST_PRECEDENCE)
 @RestControllerAdvice
 public class ExceptionsHandler {
